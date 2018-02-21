@@ -4,7 +4,7 @@
 var debug = require('debug')
 var debugWebSSH2 = require('debug')('WebSSH2')
 var SSH = require('ssh2').Client
-// var fs = require('fs')
+var fs = require('fs')
 // var hostkeys = JSON.parse(fs.readFileSync('./hostkeyhashes.json', 'utf8'))
 var termCols, termRows
 var menuData = '<a id="logBtn"><i class="fas fa-clipboard fa-fw"></i> Start Log</a><a id="downloadLogBtn"><i class="fas fa-download fa-fw"></i> Download Log</a>'
@@ -110,13 +110,17 @@ module.exports = function socket (socket) {
     debugWebSSH2('conn.on(\'keyboard-interactive\')')
     finish([socket.request.session.userpassword])
   })
-  if (socket.request.session.username && socket.request.session.userpassword && socket.request.session.ssh) {
+  // if (socket.request.session.username && socket.request.session.userpassword && socket.request.session.ssh) {
+  if (socket.request.session.ssh) {
+  
     // console.log('hostkeys: ' + hostkeys[0].[0])
     conn.connect({
       host: socket.request.session.ssh.host,
       port: socket.request.session.ssh.port,
-      username: socket.request.session.username,
-      password: socket.request.session.userpassword,
+      // username: socket.request.session.username,
+      // password: socket.request.session.userpassword,
+      username: 'ec2-user',
+      privateKey: fs.readFileSync('./SSH_TEST_KP_2018_02_16.pem'),
       tryKeyboard: true,
       algorithms: socket.request.session.ssh.algorithms,
       readyTimeout: socket.request.session.ssh.readyTimeout,
